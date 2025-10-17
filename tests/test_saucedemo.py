@@ -30,11 +30,12 @@ def test_login(driver):
 
     # Verifica que estamos en el inventario
     assert '/inventory.html' in driver.current_url, "No se redirigió a la página de inventario después del login"
-    print('Login completado correctamente y se ingresó a la página de inventario.')
 
     # Verifica título de sección
     titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
     assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
+
+    print('Login completado correctamente y se ingresó a la página de inventario.')
 
 def login_saucedemo(driver):
     entrar_a_la_pagina(driver, URL, 'Swag Labs')
@@ -44,14 +45,14 @@ def login_saucedemo(driver):
                 EC.visibility_of_element_located((By.ID, "user-name"))
             )
 
-    # Completa los campos de login y hace clic en el botón de iniciar sesión, verificando que cada elemento exista
+    # Verifica que los elementos esenciales del formulario de login estén presentes antes de interactuar con ellos
     assert driver.find_element(By.ID, "user-name"), "No se encontró el campo de usuario"
-    driver.find_element(By.ID, "user-name").send_keys(USERNAME)
-
     assert driver.find_element(By.ID, "password"), "No se encontró el campo de contraseña"
-    driver.find_element(By.ID, "password").send_keys(PASSWORD)
-
     assert driver.find_element(By.ID, "login-button"), "No se encontró el botón de login"
+
+    # Completa los campos de login y hace clic en el botón de iniciar sesión, verificando que cada elemento exista
+    driver.find_element(By.ID, "user-name").send_keys(USERNAME)
+    driver.find_element(By.ID, "password").send_keys(PASSWORD)
     driver.find_element(By.ID, "login-button").click()
 
     print("Se completaron correctamente los campos de login y se hizo clic en el botón.")
