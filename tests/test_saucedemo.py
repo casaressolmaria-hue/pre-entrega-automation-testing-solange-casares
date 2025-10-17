@@ -95,11 +95,11 @@ def verifica_menu(driver):
     print("Botón de menú encontrado.")
 
     # Abre el menú lateral haciendo clic en el botón de menú (hamburguesa)
-    print("Haciendo clic en el botón de menú lateral...")
+    print("Haciendo clic en el botón de menú lateral")
     menu_button.click()
 
     # Espera hasta que aparezca el contenedor del menú lateral
-    print("Esperando a que aparezca el menú lateral...")
+    print("Esperando a que aparezca el menú lateral")
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "bm-item-list"))
     )
@@ -114,8 +114,35 @@ def verifica_menu(driver):
     ]
 
     for item_id, expected_text in menu_items:
-        print(f"Verificando el enlace con id '{item_id}' y texto esperado '{expected_text}'...")
+        print(f"Verificando el enlace con id '{item_id}' y texto esperado '{expected_text}'")
         element = driver.find_element(By.ID, item_id)
         assert element, f"No se encontró el enlace con id '{item_id}'"
         assert element.text == expected_text, f"Texto inesperado para '{item_id}': se esperaba '{expected_text}' pero se obtuvo '{element.text}'"
         print(f"Enlace '{expected_text}' verificado correctamente.")
+
+def verifica_filtro(driver):
+    # Verifica que el elemento con clase active_option tenga el valor esperado
+    print("Verificando que la opción activa sea 'Name (A to Z)'")
+    active_option = driver.find_element(By.CLASS_NAME, "active_option")
+    assert active_option, "No se encontró el elemento con clase active_option"
+    assert active_option.text == "Name (A to Z)", f"Valor inesperado en active_option: se esperaba 'Name (A to Z)' pero se obtuvo '{active_option.text}'"
+
+    # Verifica que el select de ordenamiento exista y tenga opciones
+    print("Verificando la existencia del select de ordenamiento")
+    sort_select = driver.find_element(By.CLASS_NAME, "product_sort_container")
+    assert sort_select, "No se encontró el select con clase product_sort_container"
+    options = sort_select.find_elements(By.TAG_NAME, "option")
+    assert len(options) > 0, "El select no contiene opciones"
+
+    # Verifica que las opciones estén en el orden esperado
+    expected_values = [
+        "Name (A to Z)",
+        "Name (Z to A)",
+        "Price (low to high)",
+        "Price (high to low)"
+    ]
+
+    print("Verificando el orden y texto de las opciones")
+    for index, expected_text in enumerate(expected_values):
+        option_text = options[index].text
+        assert option_text == expected_text, f"Texto inesperado en opción {index}: se esperaba {expected_text} pero se obtuvo {option_text}"
