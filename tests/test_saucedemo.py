@@ -31,9 +31,14 @@ def test_login(driver):
     # Verifica que estamos en el inventario
     assert '/inventory.html' in driver.current_url, "No se redirigió a la página de inventario después del login"
 
+    # Verifica que exista el elemento del título y que su texto sea 'Swag Labs'
+    titulo = driver.find_element(By.CLASS_NAME, "app_logo")
+    assert titulo, "No se encontró el elemento con clase 'app_logo'"
+    assert titulo.text == "Swag Labs", f"Texto inesperado en logo: se esperaba 'Swag Labs' pero se obtuvo '{titulo.text}'"
+
     # Verifica título de sección
-    titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
-    assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
+    seccion = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
+    assert seccion == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion}'"
 
     print('Login completado correctamente y se ingresó a la página de inventario.')
 
