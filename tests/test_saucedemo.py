@@ -37,6 +37,30 @@ def test_login(driver):
 
     print('Login completado correctamente y se ingresó a la página de inventario.')
 
+def test_catalogo(driver):
+    # Hace login
+    login_saucedemo(driver)
+
+    # Verifica título de sección
+    titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
+    assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
+
+    # Confirma que aparece al menos un div.inventory_item
+    productos = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
+    assert len(productos) > 0, "No se encontraron productos en el catálogo"
+
+    # Verifica que cada producto tenga nombre y precio visibles
+    for producto in productos:
+        assert producto.find_element(By.CLASS_NAME, "inventory_item_name"), "Producto sin nombre"
+        assert producto.find_element(By.CLASS_NAME, "inventory_item_price"), "Producto sin precio"
+
+    # Muestra en consola el nombre y precio del primer producto
+    primer_producto = productos[0]
+    nombre_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_name").text
+    precio_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_price").text
+
+    print(f"Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
+
 def login_saucedemo(driver):
     entrar_a_la_pagina(driver, URL, 'Swag Labs')
 
