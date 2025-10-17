@@ -89,13 +89,21 @@ def login_saucedemo(driver):
     print("Se completaron correctamente los campos de login y se hizo clic en el botón.")
 
 def verifica_menu(driver):
+    # Verifica que exista el botón de menú lateral antes de hacer clic
+    menu_button = driver.find_element(By.CLASS_NAME, "react-burger-menu-btn")
+    assert menu_button, "No se encontró el botón con clase 'react-burger-menu-btn'"
+    print("Botón de menú encontrado.")
+
     # Abre el menú lateral haciendo clic en el botón de menú (hamburguesa)
-    driver.find_element(By.CLASS_NAME, "react-burger-menu-btn").click()
+    print("Haciendo clic en el botón de menú lateral...")
+    menu_button.click()
 
     # Espera hasta que aparezca el contenedor del menú lateral
+    print("Esperando a que aparezca el menú lateral...")
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "bm-item-list"))
     )
+    print("El menú lateral está visible.")
 
     # Verifica que los enlaces requeridos estén presentes y con el texto correcto
     menu_items = [
@@ -106,6 +114,8 @@ def verifica_menu(driver):
     ]
 
     for item_id, expected_text in menu_items:
+        print(f"Verificando el enlace con id '{item_id}' y texto esperado '{expected_text}'...")
         element = driver.find_element(By.ID, item_id)
         assert element, f"No se encontró el enlace con id '{item_id}'"
         assert element.text == expected_text, f"Texto inesperado para '{item_id}': se esperaba '{expected_text}' pero se obtuvo '{element.text}'"
+        print(f"Enlace '{expected_text}' verificado correctamente.")
