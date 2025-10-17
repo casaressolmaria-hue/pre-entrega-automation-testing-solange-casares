@@ -50,6 +50,8 @@ def test_catalogo(driver):
     titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
     assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
 
+    verifica_menu(driver)
+
     # Confirma que aparece al menos un div.inventory_item
     productos = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
     assert len(productos) > 0, "No se encontraron productos en el catálogo"
@@ -85,3 +87,25 @@ def login_saucedemo(driver):
     driver.find_element(By.ID, "login-button").click()
 
     print("Se completaron correctamente los campos de login y se hizo clic en el botón.")
+
+def verifica_menu(driver):
+    # Abre el menú lateral haciendo clic en el botón de menú (hamburguesa)
+    driver.find_element(By.CLASS_NAME, "react-burger-menu-btn").click()
+
+    # Espera hasta que aparezca el contenedor del menú lateral
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "bm-item-list"))
+    )
+
+    # Verifica que los enlaces requeridos estén presentes y con el texto correcto
+    menu_items = [
+        ("inventory_sidebar_link", "All Items"),
+        ("about_sidebar_link", "About"),
+        ("logout_sidebar_link", "Logout"),
+        ("reset_sidebar_link", "Reset App State")
+    ]
+
+    for item_id, expected_text in menu_items:
+        element = driver.find_element(By.ID, item_id)
+        assert element, f"No se encontró el enlace con id '{item_id}'"
+        assert element.text == expected_text, f"Texto inesperado para '{item_id}': se esperaba '{expected_text}' pero se obtuvo '{element.text}'"
