@@ -52,6 +52,10 @@ def test_catalogo(driver):
 
     verifica_menu(driver)
 
+    verifica_filtro(driver)
+
+    verifica_carrito(driver)
+
     # Confirma que aparece al menos un div.inventory_item
     productos = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
     assert len(productos) > 0, "No se encontraron productos en el catálogo"
@@ -90,7 +94,7 @@ def login_saucedemo(driver):
 
 def verifica_menu(driver):
     # Verifica que exista el botón de menú lateral antes de hacer clic
-    menu_button = driver.find_element(By.CLASS_NAME, "react-burger-menu-btn")
+    menu_button = driver.find_element(By.ID, "react-burger-menu-btn")
     assert menu_button, "No se encontró el botón con clase 'react-burger-menu-btn'"
     print("Botón de menú encontrado.")
 
@@ -146,3 +150,14 @@ def verifica_filtro(driver):
     for index, expected_text in enumerate(expected_values):
         option_text = options[index].text
         assert option_text == expected_text, f"Texto inesperado en opción {index}: se esperaba {expected_text} pero se obtuvo {option_text}"
+
+def verifica_carrito(driver):
+    # Verifica que exista el carrito de compras
+    print("Verificando la existencia del carrito de compras")
+    carrito = driver.find_element(By.ID, "shopping_cart_container")
+    assert carrito, "No se encontró el elemento con id shopping_cart_container"
+
+    # Verifica que el carrito esté vacío (sin contador de cantidad)
+    print("Verificando que el carrito esté vacío")
+    contador = carrito.find_elements(By.CLASS_NAME, "shopping_cart_badge")
+    assert len(contador) == 0, "El carrito no está vacío: se encontró un contador de cantidad"
