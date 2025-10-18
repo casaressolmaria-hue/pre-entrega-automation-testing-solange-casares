@@ -72,6 +72,39 @@ def test_catalogo(driver):
 
     print(f"Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
 
+def test_carrito(driver):
+    # Hace login
+    login_saucedemo(driver)
+
+    # Verifica título de sección
+    print("Verificando el título de la sección")
+    titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
+    assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
+
+    # Confirma que aparece al menos un div.inventory_item
+    print("Buscando productos en el catálogo")
+    productos = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
+    assert len(productos) > 0, "No se encontraron productos en el catálogo"
+
+    primer_producto = productos[0]
+    
+    # Verifica que existan el nombre y el precio del primer producto
+    print("Verificando que el primer producto tenga nombre y precio...")
+    nombre_elemento = primer_producto.find_element(By.CLASS_NAME, "inventory_item_name")
+    assert nombre_elemento, "No se encontró el elemento con clase inventory_item_name"
+    precio_elemento = primer_producto.find_element(By.CLASS_NAME, "inventory_item_price")
+    assert precio_elemento, "No se encontró el elemento con clase inventory_item_price"
+
+    # Verifica que exista el botón "Add to cart" en el primer producto
+    print("Verificando que exista el botón 'Add to cart' en el primer producto")
+    boton_agregar = primer_producto.find_element(By.XPATH, ".//button[text()='Add to cart']")
+    assert boton_agregar, "No se encontró el botón 'Add to cart' en el primer producto"
+
+    # Haz clic en "Add to cart" del primer producto
+    print("Haciendo clic en el botón 'Add to cart'")
+    boton_agregar = primer_producto.find_element(By.XPATH, ".//button[text()='Add to cart']")
+    boton_agregar.click()
+
 def login_saucedemo(driver):
     entrar_a_la_pagina(driver, URL, 'Swag Labs')
 
