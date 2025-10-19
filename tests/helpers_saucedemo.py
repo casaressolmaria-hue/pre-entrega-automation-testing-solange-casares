@@ -1,4 +1,3 @@
-
 from utils.helpers import entrar_a_la_pagina
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
