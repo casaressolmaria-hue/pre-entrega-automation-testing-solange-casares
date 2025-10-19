@@ -1,7 +1,6 @@
 import pytest
 import sys
 import os
-from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,15 +9,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from tests.helpers_saucedemo import login_saucedemo, verifica_carrito_vacio, verifica_filtro, verifica_menu, verifica_producto_basico
 from utils.driver import get_driver
-
-
-def captura_de_pantalla(driver, caso):
-    # Guarda una captura de pantalla con tiempo y nombre de test.
-    os.makedirs("screenshots", exist_ok=True)
-    tiempo = datetime.now().strftime("%d-%m-%Y %S-%M-%H")
-    archivo = f"screenshots/{caso}_{tiempo}.png"
-    driver.save_screenshot(archivo)
-    print(f"Screenshot guardado en: {archivo}")
 
 
 @pytest.fixture
