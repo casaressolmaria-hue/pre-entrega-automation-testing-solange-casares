@@ -5,6 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from utils.helpers import captura_de_pantalla
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from tests.helpers_saucedemo import login_saucedemo, verifica_carrito_vacio, verifica_filtro, verifica_menu, verifica_producto_basico

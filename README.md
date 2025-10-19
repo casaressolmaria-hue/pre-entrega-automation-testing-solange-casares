@@ -20,7 +20,7 @@ El objetivo es garantizar que las funciones críticas del sitio web se comporten
 └── `helpers.py` — Funciones auxiliares y genéricas para todos los tests
 
 **tests/**  
-├── `helpers_saucedemo.py` — Funciones comunes para tests de SauceDemo  
+├── `helpers_saucedemo.py` — Funciones comunes para tests de SauceDemo (login, filtros, menú...)  
 └── `test_saucedemo.py` — Casos de prueba
 
 **reports/** - Reportes HTML y capturas
