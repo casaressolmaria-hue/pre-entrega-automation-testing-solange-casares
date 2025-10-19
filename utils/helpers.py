@@ -15,7 +15,7 @@ def entrar_a_la_pagina(driver, url, titulo):
 
 def captura_de_pantalla(driver, caso):
     # Guarda una captura de pantalla con tiempo y nombre de test.
-    os.makedirs("screenshots", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
     tiempo = datetime.now().strftime("%d-%m-%Y %S-%M-%H")
     archivo = f"screenshots/{caso}_{tiempo}.png"
     driver.save_screenshot(archivo)
