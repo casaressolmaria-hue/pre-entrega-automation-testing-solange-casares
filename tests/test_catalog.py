@@ -1,6 +1,4 @@
-import pytest
 from pages.login_page import LoginPage
-from utils.driver import get_driver
 from utils.helpers import captura_de_pantalla
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,12 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
-
-@pytest.fixture
-def driver():
-    driver = get_driver()
-    yield driver
-    driver.quit()
 
 def test_catalogo(driver):
 

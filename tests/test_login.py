@@ -1,17 +1,10 @@
-import pytest
+from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
-from utils.driver import get_driver
 from utils.helpers import captura_de_pantalla
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-@pytest.fixture
-def driver():
-    driver = get_driver()
-    yield driver
-    driver.quit()
-    
 USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
 
@@ -22,6 +15,8 @@ def test_login(driver):
     try:
         login_page.abrir()
         login_page.login(USERNAME, PASSWORD)
+
+        inventory_page = InventoryPage(driver)
 
         # Verificar que el login fue exitoso comprobando que estamos en la página de productos
         WebDriverWait(driver, 10).until(
