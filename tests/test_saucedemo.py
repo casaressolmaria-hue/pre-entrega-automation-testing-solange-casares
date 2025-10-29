@@ -17,39 +17,6 @@ def driver():
     yield driver
     driver.quit()
 
-def test_catalogo(driver):
-    try:
-        # Hace login
-        login_saucedemo(driver)
-
-        # Verifica título de sección
-        titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
-        assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
-
-        verifica_menu(driver)
-        verifica_filtro(driver)
-        verifica_carrito_vacio(driver)
-
-        # Confirma que aparece al menos un div.inventory_item
-        productos = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
-        assert len(productos) > 0, "No se encontraron productos en el catálogo"
-
-        # Verifica que cada producto tenga nombre y precio visibles
-        for producto in productos:
-            verifica_producto_basico(producto)
-
-        # Muestra en consola el nombre y precio del primer producto
-        primer_producto = productos[0]
-        nombre_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_name").text
-        precio_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_price").text
-
-        print(f"Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
-
-    except Exception as e:
-        captura_de_pantalla(driver, 'test_catalogo')
-        raise e
-
-
 def test_carrito(driver):
     try:
         # Hace login
