@@ -1,3 +1,4 @@
+from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 from selenium.webdriver.common.by import By
@@ -16,94 +17,91 @@ def test_catalogo(driver):
         login_page.abrir()
         login_page.login(USERNAME, PASSWORD)
 
+        inventory_page = InventoryPage(driver)
+        
         # Verifica título de sección
-        titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
-        assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
+        seccion = inventory_page.titulo_de_seccion()
+        assert seccion, "No se encontró el elemento de título de sección"
+        assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
 
-        verifica_menu(driver)
-        verifica_filtro(driver)
+        # Verifica que exista el botón de menú lateral antes de hacer clic
+        menu_button = inventory_page.menu_boton()
+        assert menu_button, "No se encontró el botón del menú"
+        print("Botón de menú encontrado.")
+
+        # Abre el menú lateral
+        print("Haciendo clic en el botón de menú lateral")
+        inventory_page.abrir_menu()
+        print("El menú lateral está visible.")
+
+        # Verifica que los enlaces requeridos estén presentes y con el texto correcto
+        menu_items_esperados = ["All Items", "About", "Logout", "Reset App State"]
+        menu_items = inventory_page.menu_items()
+
+        assert len(menu_items) == len(menu_items_esperados), (
+            f"Cantidad de ítems inesperada: se esperaban {len(menu_items_esperados)}, "
+            f"pero se encontraron {len(menu_items)}."
+        )
+
+        for index, esperado in enumerate(menu_items_esperados):
+            obtenido = menu_items[index]
+            print(f"Verificando menú ítem: esperado '{esperado}', obtenido '{obtenido}'")
+            assert esperado == obtenido, (
+                f"Texto inesperado: se esperaba '{esperado}' pero se obtuvo '{obtenido}'"
+            )
+
+        print("Todos los ítems del menú fueron verificados correctamente.")
+
+        # Verifica que el elemento activo del ordenamiento tenga el valor esperado
+        print("Verificando que la opción del ordenamiento activo sea 'Name (A to Z)'")
+        active_option = inventory_page.filtro_activo()
+        assert active_option, "No se encontró el elemento con el ordenamiento activo."
+        assert active_option.text == "Name (A to Z)", f"El ordenamiento activo no es el esperado: se esperaba 'Name (A to Z)', pero se encontró '{active_option.text}'."
+        
+        # Verifica que el select de ordenamiento exista y tenga opciones
+        print("Verificando la existencia del select de ordenamiento")
+        sort_select = inventory_page.select_de_ordenamiento()
+        assert sort_select, "No se encontró el select de ordenamiento"
+        opciones = inventory_page.opciones_de_ordenamiento()
+        assert len(opciones) > 0, "El select no contiene opciones"
+
+        # Verifica que las opciones estén en el orden esperado
+        opciones_esperadas = [
+            "Name (A to Z)",
+            "Name (Z to A)",
+            "Price (low to high)",
+            "Price (high to low)"
+        ]
+
+        print("Verificando el orden y texto de las opciones")
+        for index, texto_esperado in enumerate(opciones_esperadas):
+            option_text = opciones[index].text
+            assert option_text == texto_esperado, f"Texto inesperado en opción {index}: se esperaba {texto_esperado} pero se obtuvo {option_text}"
+
         verifica_carrito_vacio(driver)
 
-        # Confirma que aparece al menos un div.inventory_item
-        productos = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
-        assert len(productos) > 0, "No se encontraron productos en el catálogo"
+        # Confirma que aparece al menos un producto
+        cantidad_de_productos = inventory_page.obtener_cantidad_productos()
+        assert cantidad_de_productos > 0, "No se encontraron productos en el catálogo"
+
+        productos = inventory_page.obtener_productos()
 
         # Verifica que cada producto tenga nombre y precio visibles
         for producto in productos:
-            verifica_producto_basico(producto)
+            assert inventory_page.nombre_del_producto(producto), "Producto sin nombre"
+            assert inventory_page.precio_del_producto(producto), "Producto sin precio"
 
         # Muestra en consola el nombre y precio del primer producto
         primer_producto = productos[0]
-        nombre_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_name").text
-        precio_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_price").text
+        nombre_del_producto = inventory_page.nombre_del_producto(primer_producto)
+        precio_del_producto = inventory_page.precio_del_producto(primer_producto)
 
-        print(f"Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
+        print(f"Primer producto: Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
 
     except Exception as e:
         captura_de_pantalla(driver, 'test_catalogo')
         raise e
     
-
-def verifica_menu(driver):
-    # Verifica que exista el botón de menú lateral antes de hacer clic
-    menu_button = driver.find_element(By.ID, "react-burger-menu-btn")
-    assert menu_button, "No se encontró el botón con clase 'react-burger-menu-btn'"
-    print("Botón de menú encontrado.")
-
-    # Abre el menú lateral haciendo clic en el botón de menú (hamburguesa)
-    print("Haciendo clic en el botón de menú lateral")
-    menu_button.click()
-
-    # Espera hasta que aparezca el contenedor del menú lateral
-    print("Esperando a que aparezca el menú lateral")
-    WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "bm-item-list"))
-    )
-    print("El menú lateral está visible.")
-
-    # Verifica que los enlaces requeridos estén presentes y con el texto correcto
-    menu_items = [
-        ("inventory_sidebar_link", "All Items"),
-        ("about_sidebar_link", "About"),
-        ("logout_sidebar_link", "Logout"),
-        ("reset_sidebar_link", "Reset App State")
-    ]
-
-    for item_id, expected_text in menu_items:
-        print(f"Verificando el enlace con id '{item_id}' y texto esperado '{expected_text}'")
-        element = driver.find_element(By.ID, item_id)
-        assert element, f"No se encontró el enlace con id '{item_id}'"
-        assert element.text == expected_text, f"Texto inesperado para '{item_id}': se esperaba '{expected_text}' pero se obtuvo '{element.text}'"
-        print(f"Enlace '{expected_text}' verificado correctamente.")
-
-
-def verifica_filtro(driver):
-    # Verifica que el elemento con clase active_option tenga el valor esperado
-    print("Verificando que la opción activa sea 'Name (A to Z)'")
-    active_option = driver.find_element(By.CLASS_NAME, "active_option")
-    assert active_option, "No se encontró el elemento con clase active_option"
-    assert active_option.text == "Name (A to Z)", f"Valor inesperado en active_option: se esperaba 'Name (A to Z)' pero se obtuvo '{active_option.text}'"
-
-    # Verifica que el select de ordenamiento exista y tenga opciones
-    print("Verificando la existencia del select de ordenamiento")
-    sort_select = driver.find_element(By.CLASS_NAME, "product_sort_container")
-    assert sort_select, "No se encontró el select con clase product_sort_container"
-    options = sort_select.find_elements(By.TAG_NAME, "option")
-    assert len(options) > 0, "El select no contiene opciones"
-
-    # Verifica que las opciones estén en el orden esperado
-    expected_values = [
-        "Name (A to Z)",
-        "Name (Z to A)",
-        "Price (low to high)",
-        "Price (high to low)"
-    ]
-
-    print("Verificando el orden y texto de las opciones")
-    for index, expected_text in enumerate(expected_values):
-        option_text = options[index].text
-        assert option_text == expected_text, f"Texto inesperado en opción {index}: se esperaba {expected_text} pero se obtuvo {option_text}"
-
 
 def verifica_carrito_vacio(driver):
     # Verifica que exista el carrito de compras
@@ -115,8 +113,3 @@ def verifica_carrito_vacio(driver):
     print("Verificando que el carrito esté vacío")
     contador = carrito.find_elements(By.CLASS_NAME, "shopping_cart_badge")
     assert len(contador) == 0, "El carrito no está vacío: se encontró un contador de cantidad"
-
-
-def verifica_producto_basico(producto):
-        assert producto.find_element(By.CLASS_NAME, "inventory_item_name"), "Producto sin nombre"
-        assert producto.find_element(By.CLASS_NAME, "inventory_item_price"), "Producto sin precio"
