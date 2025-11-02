@@ -7,6 +7,7 @@ class InventoryPage:
     _TITULO = (By.CLASS_NAME, 'app_logo')
     _TITULO_DE_SECCION = (By.CSS_SELECTOR, 'div.header_secondary_container .title')
     _MENU_BOTON = (By.ID, "react-burger-menu-btn")
+    _MENU_CERRAR = (By.ID, "react-burger-cross-btn")
     _MENU_LIST = (By.CLASS_NAME, "bm-item-list")
     _FILTRO_ACTIVO = (By.CLASS_NAME, "active_option")
     _SELECT_DE_ORDENAMIENTO = (By.CLASS_NAME, "product_sort_container")
@@ -29,16 +30,21 @@ class InventoryPage:
         return self.driver.find_element(*self._TITULO_DE_SECCION)
     
     def menu_boton(self):
-        return self.driver.find_element(*self._MENU_BOTON)
+        return self.wait.until(EC.element_to_be_clickable(self._MENU_BOTON))
     
     def abrir_menu(self):
+        self.cerrar_menu()
         boton = self.menu_boton()
         boton.click()
-        self.wait.until(EC.visibility_of_element_located(*self._MENU_LIST))
-        return self.driver.find_element(*self._MENU_LIST)
+        return self.wait.until(EC.element_to_be_clickable(self._MENU_LIST))
     
+    def cerrar_menu(self):
+        cerrar = self.driver.find_element(*self._MENU_CERRAR)
+        if cerrar.is_displayed():
+            cerrar.click()
+
     def menu_items(self):
-        menu = self.abrir_menu(self)
+        menu = self.abrir_menu()
         return menu.find_elements(By.TAG_NAME, "a")
     
     def filtro_activo(self):
@@ -68,7 +74,7 @@ class InventoryPage:
         return self.driver.find_element(*self._CARRITO)
 
     def carrito_contador(self):
-        carrito = carrito()
+        carrito = self.carrito()
         return len(carrito.find_elements(*self._CARRITO_CONTADOR))
 
     # agregar_producto_por_indice

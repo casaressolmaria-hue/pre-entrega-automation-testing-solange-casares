@@ -1,3 +1,4 @@
+from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 from selenium.webdriver.common.by import By
@@ -16,27 +17,25 @@ def test_carrito(driver):
         login_page.abrir()
         login_page.login(USERNAME, PASSWORD)
 
-        # Verifica título de sección
-        print("Verificando el título de la sección")
-        titulo = driver.find_element(By.CSS_SELECTOR, 'div.header_secondary_container .title').text
-        assert titulo == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{titulo}'"
-
-        # Confirma que aparece al menos un div.inventory_item
-        print("Buscando productos en el catálogo")
-        productos = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
-        assert len(productos) > 0, "No se encontraron productos en el catálogo"
-
-        primer_producto = productos[0]
+        inventory_page = InventoryPage(driver)
         
+        # Verifica título de sección
+        seccion = inventory_page.titulo_de_seccion()
+        assert seccion, "No se encontró el elemento de título de sección"
+        assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
+
+        # Confirma que aparece al menos un producto
+        assert inventory_page.obtener_cantidad_productos() > 0, "No se encontraron productos en el catálogo"
+
+        productos = inventory_page.obtener_productos()
+        primer_producto = productos[0]
+
         # Verifica que existan el nombre y el precio del primer producto
         print("Verificando que el primer producto tenga nombre y precio...")
+        assert inventory_page.nombre_del_producto(primer_producto), "Producto sin nombre"
+        assert inventory_page.precio_del_producto(primer_producto), "Producto sin precio"
 
-        verifica_producto_basico(primer_producto)
-
-        nombre_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_name").text
-        precio_del_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_price").text
-
-        print(f"Primer producto: Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
+        print(f"Primer producto: Nombre: {inventory_page.nombre_del_producto(primer_producto)}, Precio: {inventory_page.precio_del_producto(primer_producto)}")
 
         # Verifica que exista el botón "Add to cart" en el primer producto
         print("Verificando que exista el botón 'Add to cart' en el primer producto")

@@ -41,9 +41,9 @@ def test_catalogo(driver):
 
         for index, esperado in enumerate(menu_items_esperados):
             obtenido = menu_items[index]
-            print(f"Verificando menú ítem: esperado '{esperado}', obtenido '{obtenido}'")
-            assert esperado == obtenido, (
-                f"Texto inesperado: se esperaba '{esperado}' pero se obtuvo '{obtenido}'"
+            print(f"Verificando menú ítem: esperado '{esperado}', obtenido '{obtenido.text}'")
+            assert esperado == obtenido.text, (
+                f"Texto inesperado: se esperaba '{esperado}' pero se obtuvo '{obtenido.text}'"
             )
 
         print("Todos los ítems del menú fueron verificados correctamente.")
