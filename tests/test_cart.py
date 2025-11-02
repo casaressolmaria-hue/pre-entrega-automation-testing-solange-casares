@@ -1,9 +1,8 @@
+from pages.cart_page import CartPage
 from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
@@ -30,66 +29,53 @@ def test_carrito(driver):
         productos = inventory_page.obtener_productos()
         primer_producto = productos[0]
 
+        nombre_del_producto = inventory_page.nombre_del_producto(primer_producto)
+        precio_del_producto = inventory_page.precio_del_producto(primer_producto)
+
         # Verifica que existan el nombre y el precio del primer producto
         print("Verificando que el primer producto tenga nombre y precio...")
-        assert inventory_page.nombre_del_producto(primer_producto), "Producto sin nombre"
-        assert inventory_page.precio_del_producto(primer_producto), "Producto sin precio"
+        assert nombre_del_producto, "Producto sin nombre"
+        assert precio_del_producto, "Producto sin precio"
 
         print(f"Primer producto: Nombre: {inventory_page.nombre_del_producto(primer_producto)}, Precio: {inventory_page.precio_del_producto(primer_producto)}")
 
         # Verifica que exista el botón "Add to cart" en el primer producto
         print("Verificando que exista el botón 'Add to cart' en el primer producto")
-        boton_agregar = primer_producto.find_element(By.XPATH, ".//button[text()='Add to cart']")
-        assert boton_agregar, "No se encontró el botón 'Add to cart' en el primer producto"
+        assert inventory_page.boton_agregar(primer_producto), "No se encontró el botón 'Add to cart' en el primer producto"
 
         # Haz clic en "Add to cart" del primer producto
-        print("Haciendo clic en el botón 'Add to cart'")
-        boton_agregar = primer_producto.find_element(By.XPATH, ".//button[text()='Add to cart']")
-        boton_agregar.click()
+        print("Agregando primer producto haciendo clic en el botón 'Add to cart'")
+        inventory_page.agregar_producto(primer_producto)
 
         # Verifica que el contador del carrito muestre 1
         print("Verificando que el contador del carrito muestre 1")
-        carrito = driver.find_element(By.CLASS_NAME, "shopping_cart_link")
-        assert carrito, "No se encontró el icono del carrito"
-
-        # Espera explícita para que aparezca el contador del carrito
-        print("Esperando que aparezca el contador del carrito")
-        WebDriverWait(driver, 8).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "shopping_cart_badge"))
-        )
-
-        contador = carrito.find_elements(By.CLASS_NAME, "shopping_cart_badge")
-        assert len(contador) > 0, "No se encontró el contador del carrito después de agregar el producto"
+        assert inventory_page.carrito_contador() > 0, "No se encontró el contador del carrito después de agregar el producto"
 
         # Ingresa al carrito
         print("Ingresando al carrito")
-        carrito.click()
-        
-        # Espera explícita a que cargue la página del carrito
-        WebDriverWait(driver, 8).until(
-            EC.url_contains("/cart.html")
-        )
-        assert '/cart.html' in driver.current_url, "No se redireccionó correctamente a la página del carrito"
-    
+        inventory_page.ir_al_carrito()
+
+        # Espera a que cargue la página del carrito
+        cart_page = CartPage(driver)
+
         # Verifica que exista la lista de productos del carrito
         print("Verificando que exista la lista de productos en el carrito")
-        la_lista_de_los_productos_del_carrito = driver.find_elements(By.CLASS_NAME, "cart_list")
-        assert len(la_lista_de_los_productos_del_carrito) > 0, "No se encontró la lista de productos en el carrito"
+        assert cart_page.lista_de_los_productos(), "No se encontró la lista de productos en el carrito"
 
-        productos_del_carrito = la_lista_de_los_productos_del_carrito[0].find_elements(By.CLASS_NAME, "cart_item")
+        productos_del_carrito = cart_page.productos_del_carrito()
         assert len(productos_del_carrito) == 1, f"Se esperaba 1 producto en el carrito, pero se encontraron {len(productos_del_carrito)}"
         
         # Verificar que el producto añadido esté en la lista
         print("Verificando que el producto añadido sea el correcto")
-        el_producto_esperado = productos_del_carrito[0]
+        primer_producto_del_carrito = productos_del_carrito[0]
 
-        nombre_en_carrito = el_producto_esperado.find_element(By.CLASS_NAME, 'inventory_item_name')
+        nombre_en_carrito = cart_page.nombre_del_producto_agregado(primer_producto_del_carrito)
         assert nombre_en_carrito, "No se encontró el nombre del producto en el carrito"
         assert nombre_en_carrito.text == nombre_del_producto, (
             f"Nombre inesperado en el carrito: se esperaba {nombre_del_producto} pero se obtuvo {nombre_en_carrito.text}"
         )
 
-        precio_en_carrito = el_producto_esperado.find_element(By.CLASS_NAME, 'inventory_item_price')
+        precio_en_carrito = cart_page.precio_del_producto_agregado(primer_producto_del_carrito)
         assert precio_en_carrito, "No se encontró el precio del producto en el carrito"
         assert precio_en_carrito.text == precio_del_producto, (
             f"Precio inesperado en el carrito: se esperaba {precio_del_producto} pero se obtuvo {precio_en_carrito.text}"
@@ -100,8 +86,3 @@ def test_carrito(driver):
     except Exception as e:
         captura_de_pantalla(driver, 'test_carrito')
         raise e
-    
-
-def verifica_producto_basico(producto):
-        assert producto.find_element(By.CLASS_NAME, "inventory_item_name"), "Producto sin nombre"
-        assert producto.find_element(By.CLASS_NAME, "inventory_item_price"), "Producto sin precio"

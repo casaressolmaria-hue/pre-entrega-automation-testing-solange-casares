@@ -17,6 +17,7 @@ class InventoryPage:
     _PRECIO_DEL_PRODUCTO = (By.CLASS_NAME, "inventory_item_price")
     _CARRITO = (By.ID, "shopping_cart_container")
     _CARRITO_CONTADOR = (By.CLASS_NAME, "shopping_cart_badge")
+    _AGREGAR_PRODUCTO = (By.XPATH, ".//button[text()='Add to cart']")
 
     def __init__(self, driver):
         self.driver = driver
@@ -64,21 +65,27 @@ class InventoryPage:
     def obtener_productos(self):
         return self.driver.find_elements(*self._INVENTORY_ITEM)
     
+    def carrito(self):
+        return self.driver.find_element(*self._CARRITO)
+
+    def carrito_contador(self):
+        carrito = self.carrito()
+        self.wait.until(EC.presence_of_element_located(self._CARRITO_CONTADOR))
+        return len(carrito.find_elements(*self._CARRITO_CONTADOR))
+
     def nombre_del_producto(self, producto):
         return producto.find_element(*self._NOMBRE_DEL_PRODUCTO).text
 
     def precio_del_producto(self, producto):
         return producto.find_element(*self._PRECIO_DEL_PRODUCTO).text
 
-    def carrito(self):
-        return self.driver.find_element(*self._CARRITO)
+    def boton_agregar(self, producto):
+        return producto.find_element(*self._AGREGAR_PRODUCTO)
 
-    def carrito_contador(self):
+    def agregar_producto(self, producto):
+        boton = self.boton_agregar(producto)
+        boton.click()
+
+    def ir_al_carrito(self):
         carrito = self.carrito()
-        return len(carrito.find_elements(*self._CARRITO_CONTADOR))
-
-    # agregar_producto_por_indice
-
-    # ir_al_carrito
-
-    # realizar_logout
+        carrito.click()
