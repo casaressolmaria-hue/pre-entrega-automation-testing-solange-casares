@@ -14,6 +14,8 @@ class InventoryPage:
     _INVENTORY_ITEM = (By.CSS_SELECTOR, "div.inventory_item")
     _NOMBRE_DEL_PRODUCTO = (By.CLASS_NAME, "inventory_item_name")
     _PRECIO_DEL_PRODUCTO = (By.CLASS_NAME, "inventory_item_price")
+    _CARRITO = (By.ID, "shopping_cart_container")
+    _CARRITO_CONTADOR = (By.CLASS_NAME, "shopping_cart_badge")
 
     def __init__(self, driver):
         self.driver = driver
@@ -61,6 +63,13 @@ class InventoryPage:
 
     def precio_del_producto(self, producto):
         return producto.find_element(*self._PRECIO_DEL_PRODUCTO).text
+
+    def carrito(self):
+        return self.driver.find_element(*self._CARRITO)
+
+    def carrito_contador(self):
+        carrito = carrito()
+        return len(carrito.find_elements(*self._CARRITO_CONTADOR))
 
     # agregar_producto_por_indice
 

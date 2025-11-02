@@ -1,9 +1,6 @@
 from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
@@ -25,14 +22,13 @@ def test_catalogo(driver):
         assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
 
         # Verifica que exista el botón de menú lateral antes de hacer clic
-        menu_button = inventory_page.menu_boton()
-        assert menu_button, "No se encontró el botón del menú"
+        assert inventory_page.menu_boton(), "No se encontró el botón del menú"
         print("Botón de menú encontrado.")
 
         # Abre el menú lateral
         print("Haciendo clic en el botón de menú lateral")
         inventory_page.abrir_menu()
-        print("El menú lateral está visible.")
+        print("El menú lateral está abierto.")
 
         # Verifica que los enlaces requeridos estén presentes y con el texto correcto
         menu_items_esperados = ["All Items", "About", "Logout", "Reset App State"]
@@ -60,8 +56,7 @@ def test_catalogo(driver):
         
         # Verifica que el select de ordenamiento exista y tenga opciones
         print("Verificando la existencia del select de ordenamiento")
-        sort_select = inventory_page.select_de_ordenamiento()
-        assert sort_select, "No se encontró el select de ordenamiento"
+        assert inventory_page.select_de_ordenamiento(), "No se encontró el select de ordenamiento"
         opciones = inventory_page.opciones_de_ordenamiento()
         assert len(opciones) > 0, "El select no contiene opciones"
 
@@ -78,11 +73,16 @@ def test_catalogo(driver):
             option_text = opciones[index].text
             assert option_text == texto_esperado, f"Texto inesperado en opción {index}: se esperaba {texto_esperado} pero se obtuvo {option_text}"
 
-        verifica_carrito_vacio(driver)
+        # Verifica que exista el carrito de compras
+        print("Verificando la existencia del carrito de compras")
+        assert inventory_page.carrito(), "No se encontró el elemento con id shopping_cart_container"
+
+        # Verifica que el carrito esté vacío (sin contador de cantidad)
+        print("Verificando que el carrito esté vacío")
+        assert inventory_page.carrito_contador() == 0, "El carrito no está vacío: se encontró un contador de cantidad"
 
         # Confirma que aparece al menos un producto
-        cantidad_de_productos = inventory_page.obtener_cantidad_productos()
-        assert cantidad_de_productos > 0, "No se encontraron productos en el catálogo"
+        assert inventory_page.obtener_cantidad_productos() > 0, "No se encontraron productos en el catálogo"
 
         productos = inventory_page.obtener_productos()
 
@@ -101,15 +101,4 @@ def test_catalogo(driver):
     except Exception as e:
         captura_de_pantalla(driver, 'test_catalogo')
         raise e
-    
 
-def verifica_carrito_vacio(driver):
-    # Verifica que exista el carrito de compras
-    print("Verificando la existencia del carrito de compras")
-    carrito = driver.find_element(By.ID, "shopping_cart_container")
-    assert carrito, "No se encontró el elemento con id shopping_cart_container"
-
-    # Verifica que el carrito esté vacío (sin contador de cantidad)
-    print("Verificando que el carrito esté vacío")
-    contador = carrito.find_elements(By.CLASS_NAME, "shopping_cart_badge")
-    assert len(contador) == 0, "El carrito no está vacío: se encontró un contador de cantidad"
