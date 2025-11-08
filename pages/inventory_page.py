@@ -2,6 +2,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+from pages.cart_page import CartPage
+
 class InventoryPage:
 
     _TITULO = (By.CLASS_NAME, 'app_logo')
@@ -43,6 +45,7 @@ class InventoryPage:
         cerrar = self.driver.find_element(*self._MENU_CERRAR)
         if cerrar.is_displayed():
             cerrar.click()
+        return self
 
     def menu_items(self):
         menu = self.abrir_menu()
@@ -70,7 +73,6 @@ class InventoryPage:
 
     def carrito_contador(self):
         carrito = self.carrito()
-        self.wait.until(EC.presence_of_element_located(self._CARRITO_CONTADOR))
         return len(carrito.find_elements(*self._CARRITO_CONTADOR))
 
     def nombre_del_producto(self, producto):
@@ -85,7 +87,9 @@ class InventoryPage:
     def agregar_producto(self, producto):
         boton = self.boton_agregar(producto)
         boton.click()
+        return self
 
     def ir_al_carrito(self):
         carrito = self.carrito()
         carrito.click()
+        return CartPage(self.driver)

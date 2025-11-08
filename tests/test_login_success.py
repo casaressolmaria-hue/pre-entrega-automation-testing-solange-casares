@@ -1,4 +1,3 @@
-from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 
@@ -11,9 +10,7 @@ def test_login(driver):
 
     try:
         login_page.abrir()
-        login_page.login(USERNAME, PASSWORD)
-
-        inventory_page = InventoryPage(driver)
+        inventory_page = login_page.login(USERNAME, PASSWORD)
 
         # Verifica que exista el elemento del título y que su texto sea 'Swag Labs'
         titulo = inventory_page.titulo()

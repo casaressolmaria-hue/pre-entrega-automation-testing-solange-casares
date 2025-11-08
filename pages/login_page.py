@@ -2,6 +2,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from pages.inventory_page import InventoryPage
+
 class LoginPage:
 
     URL = 'https://www.saucedemo.com/'
@@ -38,4 +40,4 @@ class LoginPage:
         self.completar_usuario(usuario)
         self.completar_clave(clave)
         self.hacer_click_login()
-        return self
+        return InventoryPage(self.driver)

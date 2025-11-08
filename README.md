@@ -47,7 +47,7 @@ El objetivo es garantizar que las funciones críticas del sitio web se comporten
 
  - Ejecuta las pruebas con:
     ```bash
-    pytest -v tests/test_saucedemo.py
+    pytest -v tests
  - Para generar un reporte HTML:
     ```bash
-    pytest tests/test_saucedemo.py -v --html=./reports/reporte.html
+    pytest tests -v --html=./reports/reporte.html

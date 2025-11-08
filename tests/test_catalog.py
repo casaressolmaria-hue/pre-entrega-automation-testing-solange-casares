@@ -1,4 +1,3 @@
-from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 
@@ -12,10 +11,8 @@ def test_catalogo(driver):
     try:
         # Hace login
         login_page.abrir()
-        login_page.login(USERNAME, PASSWORD)
+        inventory_page = login_page.login(USERNAME, PASSWORD)
 
-        inventory_page = InventoryPage(driver)
-        
         # Verifica título de sección
         seccion = inventory_page.titulo_de_seccion()
         assert seccion, "No se encontró el elemento de título de sección"
@@ -79,7 +76,8 @@ def test_catalogo(driver):
 
         # Verifica que el carrito esté vacío (sin contador de cantidad)
         print("Verificando que el carrito esté vacío")
-        assert inventory_page.carrito_contador() == 0, "El carrito no está vacío: se encontró un contador de cantidad"
+        contador = inventory_page.carrito_contador()
+        assert contador == 0, f"El carrito no está vacío: se encontró un contador de cantidad: {contador}"
 
         # Confirma que aparece al menos un producto
         assert inventory_page.obtener_cantidad_productos() > 0, "No se encontraron productos en el catálogo"

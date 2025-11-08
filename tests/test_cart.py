@@ -1,8 +1,5 @@
-from pages.cart_page import CartPage
-from pages.inventory_page import InventoryPage
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
-from selenium.webdriver.common.by import By
 
 USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
@@ -14,10 +11,8 @@ def test_carrito(driver):
     try:
         # Hace login
         login_page.abrir()
-        login_page.login(USERNAME, PASSWORD)
+        inventory_page = login_page.login(USERNAME, PASSWORD)
 
-        inventory_page = InventoryPage(driver)
-        
         # Verifica título de sección
         seccion = inventory_page.titulo_de_seccion()
         assert seccion, "No se encontró el elemento de título de sección"
@@ -53,10 +48,7 @@ def test_carrito(driver):
 
         # Ingresa al carrito
         print("Ingresando al carrito")
-        inventory_page.ir_al_carrito()
-
-        # Espera a que cargue la página del carrito
-        cart_page = CartPage(driver)
+        cart_page = inventory_page.ir_al_carrito()
 
         # Verifica que exista la lista de productos del carrito
         print("Verificando que exista la lista de productos en el carrito")

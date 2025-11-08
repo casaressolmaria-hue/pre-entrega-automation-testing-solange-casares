@@ -2,8 +2,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-# Navegación de regreso al inventario
-
 class CartPage:
 
     _LISTA_DE_LOS_PRODUCTOS = (By.CLASS_NAME, "cart_list")
