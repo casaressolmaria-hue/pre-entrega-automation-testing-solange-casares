@@ -15,29 +15,29 @@ class LoginPage:
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
-
+    
     def abrir(self):
         self.driver.get(self.URL)
         return self
 
-    def completar_usuario(self, usuario: str):
+    def login(self, usuario, clave):
+        self._completar_usuario(usuario)
+        self._completar_clave(clave)
+        self._hacer_click_login()
+        return InventoryPage(self.driver)
+    
+    def _completar_usuario(self, usuario: str):
         campo = self.wait.until(EC.visibility_of_element_located(self._USER_INPUT))
         campo.clear()
         campo.send_keys(usuario)
         return self
 
-    def completar_clave(self, clave: str):
+    def _completar_clave(self, clave: str):
         campo = self.driver.find_element(*self._PASSWORD_INPUT)
         campo.clear()
         campo.send_keys(clave)
         return self
 
-    def hacer_click_login(self):
+    def _hacer_click_login(self):
         self.driver.find_element(*self._SUBMIT_BUTTON).click()
         return self
-
-    def login(self, usuario, clave):
-        self.completar_usuario(usuario)
-        self.completar_clave(clave)
-        self.hacer_click_login()
-        return InventoryPage(self.driver)

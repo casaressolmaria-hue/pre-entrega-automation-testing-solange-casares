@@ -5,7 +5,25 @@ USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
 
 def test_catalogo(driver):
+    """
+    Prueba integral del catálogo en la página de inventario.
 
+    Pasos:
+    - Inicia sesión con credenciales válidas.
+    - Verifica el título de sección 'Products'.
+    - Confirma la existencia y funcionamiento del menú lateral.
+    - Valida la presencia y el texto de los ítems del menú.
+    - Comprueba el ordenamiento activo y las opciones disponibles.
+    - Revisa la existencia del carrito y que esté vacío.
+    - Valida que haya productos visibles en el catálogo.
+    - Confirma que cada producto tenga nombre y precio visibles.
+    - Imprime en consola el nombre y precio del primer producto.
+
+    Si ocurre un error durante la prueba:
+    - Captura una captura de pantalla.
+    - Relanza la excepción para que el test falle correctamente.
+    """
+    
     login_page = LoginPage(driver)
 
     try:

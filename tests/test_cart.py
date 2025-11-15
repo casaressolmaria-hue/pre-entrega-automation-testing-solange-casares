@@ -5,7 +5,26 @@ USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
     
 def test_carrito(driver):
+    """
+    Prueba del flujo completo de agregar un producto al carrito.
 
+    Pasos:
+    - Inicia sesión correctamente.
+    - Verifica que el catálogo muestre la sección 'Products'.
+    - Confirma que exista al menos un producto.
+    - Obtiene el primer producto y valida que tenga nombre y precio visibles.
+    - Verifica que tenga un botón 'Add to cart' y lo presiona.
+    - Comprueba que el contador del carrito aumente.
+    - Ingresa al carrito.
+    - Valida que exista la lista de productos del carrito.
+    - Verifica que haya exactamente un producto añadido.
+    - Confirma que el nombre y precio del producto del carrito coincidan con el producto seleccionado.
+
+    En caso de error:
+    - Se captura una captura de pantalla.
+    - Se relanza la excepción para marcar el test como fallido.
+    """
+    
     login_page = LoginPage(driver)
 
     try:

@@ -5,7 +5,18 @@ USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
 
 def test_login(driver):
+    """
+    Prueba el proceso de inicio de sesión en la aplicación.
 
+    Pasos:
+    - Abre la página de login.
+    - Ingresa credenciales válidas.
+    - Verifica que se acceda correctamente al inventario.
+    - Valida que los títulos esperados estén presentes.
+
+    Si ocurre un error, captura una captura de pantalla y relanza la excepción.
+    """
+    
     login_page = LoginPage(driver)
 
     try:

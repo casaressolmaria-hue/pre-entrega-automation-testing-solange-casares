@@ -36,12 +36,12 @@ class InventoryPage:
         return self.wait.until(EC.element_to_be_clickable(self._MENU_BOTON))
     
     def abrir_menu(self):
-        self.cerrar_menu()
+        self._cerrar_menu()
         boton = self.menu_boton()
         boton.click()
         return self.wait.until(EC.element_to_be_clickable(self._MENU_LIST))
     
-    def cerrar_menu(self):
+    def _cerrar_menu(self):
         cerrar = self.driver.find_element(*self._MENU_CERRAR)
         if cerrar.is_displayed():
             cerrar.click()
