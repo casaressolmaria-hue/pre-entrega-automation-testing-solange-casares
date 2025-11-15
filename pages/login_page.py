@@ -24,8 +24,14 @@ class LoginPage:
         self._completar_usuario(usuario)
         self._completar_clave(clave)
         self._hacer_click_login()
-        return InventoryPage(self.driver)
+        if "inventory.html" in self.driver.current_url:
+            return InventoryPage(self.driver)
+        else:
+            return None
     
+    def hay_error(self):
+        return self.driver.find_element(By.CSS_SELECTOR, ".error-message-container.error").is_displayed()
+
     def _completar_usuario(self, usuario: str):
         campo = self.wait.until(EC.visibility_of_element_located(self._USER_INPUT))
         campo.clear()
