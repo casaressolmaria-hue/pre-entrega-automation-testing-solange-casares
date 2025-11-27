@@ -104,13 +104,14 @@ def test_catalogo(driver):
 
         # Verifica que cada producto tenga nombre y precio visibles
         for producto in productos:
-            assert inventory_page.nombre_del_producto(producto), "Producto sin nombre"
-            assert inventory_page.precio_del_producto(producto), "Producto sin precio"
+            nombre_del_producto = inventory_page.nombre_del_producto(producto)
+            assert nombre_del_producto, "Producto sin nombre"
+            assert inventory_page.obtener_precio_del_producto(nombre_del_producto), "Producto sin precio"
 
         # Muestra en consola el nombre y precio del primer producto
         primer_producto = productos[0]
         nombre_del_producto = inventory_page.nombre_del_producto(primer_producto)
-        precio_del_producto = inventory_page.precio_del_producto(primer_producto)
+        precio_del_producto = inventory_page.obtener_precio_del_producto(nombre_del_producto)
 
         print(f"Primer producto: Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
 

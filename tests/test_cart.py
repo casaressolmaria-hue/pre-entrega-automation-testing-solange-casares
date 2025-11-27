@@ -43,15 +43,14 @@ def test_carrito(driver):
         productos = inventory_page.obtener_productos()
         primer_producto = productos[0]
 
-        nombre_del_producto = inventory_page.nombre_del_producto(primer_producto)
-        precio_del_producto = inventory_page.precio_del_producto(primer_producto)
-
         # Verifica que existan el nombre y el precio del primer producto
         print("Verificando que el primer producto tenga nombre y precio...")
+        nombre_del_producto = inventory_page.nombre_del_producto(primer_producto)
         assert nombre_del_producto, "Producto sin nombre"
+        precio_del_producto = inventory_page.obtener_precio_del_producto(nombre_del_producto)
         assert precio_del_producto, "Producto sin precio"
 
-        print(f"Primer producto: Nombre: {inventory_page.nombre_del_producto(primer_producto)}, Precio: {inventory_page.precio_del_producto(primer_producto)}")
+        print(f"Primer producto: Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
 
         # Verifica que exista el botón "Add to cart" en el primer producto
         print("Verificando que exista el botón 'Add to cart' en el primer producto")

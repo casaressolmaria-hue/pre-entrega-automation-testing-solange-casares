@@ -3,9 +3,9 @@ from pages.login_page import LoginPage
 from utils.datos import leer_csv_login
 from utils.helpers import captura_de_pantalla
 
-CASOS_LOGIN = leer_csv_login('datos/login.csv')
+_CASOS_LOGIN = leer_csv_login('datos/login.csv')
 
-@pytest.mark.parametrize("usuario, clave, debe_funcionar", CASOS_LOGIN)
+@pytest.mark.parametrize("usuario, clave, debe_funcionar", _CASOS_LOGIN)
 def test_login_desde_csv(driver, usuario, clave, debe_funcionar):
     login_page = LoginPage(driver)
 

@@ -25,4 +25,5 @@ class CartPage:
         return producto.find_element(*self._NOMBRE_DEL_PRODUCTO)
     
     def precio_del_producto_agregado(self, producto):
-        return producto.find_element(*self._PRECIO_DEL_PRODUCTO)
+        precio = producto.find_element(*self._PRECIO_DEL_PRODUCTO).text
+        return float(precio.replace("$", ""))

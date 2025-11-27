@@ -20,6 +20,7 @@ class InventoryPage:
     _CARRITO = (By.ID, "shopping_cart_container")
     _CARRITO_CONTADOR = (By.CLASS_NAME, "shopping_cart_badge")
     _AGREGAR_PRODUCTO = (By.XPATH, ".//button[text()='Add to cart']")
+    _PRODUCTO_POR_NOMBRE = (By.XPATH, "//div[@data-test='inventory-item-name' and text()='{}']/ancestor::div[@data-test='inventory-item']")
 
     def __init__(self, driver):
         self.driver = driver
@@ -68,6 +69,16 @@ class InventoryPage:
     def obtener_productos(self):
         return self.driver.find_elements(*self._INVENTORY_ITEM)
     
+    def obtener_precio_del_producto(self, nombre_producto):
+        producto = self._obtener_producto_por_nombre(nombre_producto)
+        precio = producto.find_element(*self._PRECIO_DEL_PRODUCTO).text
+        return float(precio.replace("$", ""))
+    
+    def _obtener_producto_por_nombre(self, nombre_producto):
+        by, xpath_template = self._PRODUCTO_POR_NOMBRE
+        xpath = xpath_template.format(nombre_producto)
+        return self.driver.find_element(by, xpath)
+    
     def carrito(self):
         return self.driver.find_element(*self._CARRITO)
 
@@ -78,9 +89,6 @@ class InventoryPage:
     def nombre_del_producto(self, producto):
         return producto.find_element(*self._NOMBRE_DEL_PRODUCTO).text
 
-    def precio_del_producto(self, producto):
-        return producto.find_element(*self._PRECIO_DEL_PRODUCTO).text
-
     def boton_agregar(self, producto):
         return producto.find_element(*self._AGREGAR_PRODUCTO)
 
@@ -88,6 +96,10 @@ class InventoryPage:
         boton = self.boton_agregar(producto)
         boton.click()
         return self
+    
+    def agregar_producto_por_nombre(self, nombre_producto):
+        producto = self._obtener_producto_por_nombre(nombre_producto)
+        return self.agregar_producto(producto)
 
     def ir_al_carrito(self):
         carrito = self.carrito()

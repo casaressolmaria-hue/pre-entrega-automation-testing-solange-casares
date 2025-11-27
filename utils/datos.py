@@ -27,6 +27,7 @@ def leer_json_productos(ruta_archivo):
     with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
         productos = json.load(archivo)
     
+    return productos
     # Extraer solo los nombres para parametrización
-    nombres = [producto['nombre'] for producto in productos]
-    return nombres
+    # nombres = [producto['nombre'] for producto in productos]
+    # return nombres

@@ -1,0 +1,4 @@
+# Ignorar carpetas de cache de Python
+__pycache__/
+*/__pycache__/
+tests/__pycache__/
