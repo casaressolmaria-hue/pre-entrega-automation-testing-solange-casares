@@ -1,9 +1,11 @@
+import pytest
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 
 USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
 
+@pytest.mark.smoke
 def test_login(driver):
     """
     Prueba el proceso de inicio de sesión en la aplicación.

@@ -1,9 +1,11 @@
+import pytest
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 
 USERNAME = 'standard_user'
 PASSWORD = 'secret_sauce'
     
+@pytest.mark.smoke
 def test_carrito(driver):
     """
     Prueba del flujo completo de agregar un producto al carrito.
@@ -87,8 +89,8 @@ def test_carrito(driver):
 
         precio_en_carrito = cart_page.precio_del_producto_agregado(primer_producto_del_carrito)
         assert precio_en_carrito, "No se encontró el precio del producto en el carrito"
-        assert precio_en_carrito.text == precio_del_producto, (
-            f"Precio inesperado en el carrito: se esperaba {precio_del_producto} pero se obtuvo {precio_en_carrito.text}"
+        assert precio_en_carrito == precio_del_producto, (
+            f"Precio inesperado en el carrito: se esperaba {precio_del_producto} pero se obtuvo {precio_en_carrito}"
         )
 
         print("El producto en el carrito coincide con el producto añadido.")

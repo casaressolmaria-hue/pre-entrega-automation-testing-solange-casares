@@ -4,7 +4,7 @@ from pages.login_page import LoginPage
 from utils.datos import leer_json_productos
 from utils.helpers import captura_de_pantalla
 
-PRODUCTOS = leer_json_productos('datos/productos.json')
+_PRODUCTOS = leer_json_productos('datos/productos.json')
 
 @pytest.fixture
 def usuario_logueado(driver):
@@ -16,9 +16,30 @@ def usuario_logueado(driver):
     return login_page.login("standard_user", "secret_sauce")
 
 
-@pytest.mark.parametrize("producto", PRODUCTOS)
+@pytest.mark.parametrize("producto", _PRODUCTOS)
 def test_carrito(driver, usuario_logueado, producto):
-    
+    """
+    Test end-to-end del flujo de agregar un producto al carrito.
+
+    Este test valida:
+
+    1. Que el usuario logueado accede correctamente a la página de inventario.
+    2. Que la sección de productos muestra el título esperado ("Products").
+    3. Que el catálogo contiene al menos un producto.
+    4. Que el precio del producto obtenido coincide con el precio definido en los datos.
+    5. Que el producto puede agregarse al carrito.
+    6. Que el contador del carrito incrementa tras agregar el producto.
+    7. Que el carrito contiene exactamente un producto.
+    8. Que el nombre y precio del producto en el carrito coinciden con los esperados.
+
+    Si ocurre cualquier excepción, se captura una captura de pantalla antes de relanzar el error.
+
+    Parámetros:
+        driver (WebDriver): Instancia del navegador para la prueba.
+        usuario_logueado (InventoryPage): Página ya autenticada para comenzar el test.
+        producto (dict): Datos del producto (nombre y precio) proporcionados por la parametrización.
+    """
+        
     try:
         inventory_page = usuario_logueado
 
